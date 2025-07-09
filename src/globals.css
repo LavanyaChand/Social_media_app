@@ -277,7 +277,15 @@
   }
 
   .shad-button_ghost {
-    @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
+    @apply flex items-center gap-3 justify-start px-4 py-2 text-sm hover:bg-transparent hover:text-white !important;
+  }
+
+}
+
+@media (min-width: 1024px) {
+  .shad-button_ghost {
+    @apply px-6 py-2 text-base;
   }
 }
+
 
