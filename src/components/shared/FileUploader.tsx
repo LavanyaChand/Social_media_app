@@ -1,15 +1,30 @@
 import React, {useCallback, useState} from 'react'
-import {useDropzone} from 'react-dropzone'
+import { type FileWithPath, useDropzone } from 'react-dropzone'
 import { Button } from '../ui/button';
+import { convertFileToUrl } from "@/lib/utils";
 
-const FileUploader = () => {
+type FileUploaderProps ={
+    fieldChange: (FILES: File[]) => void;
+    mediaUrl: string;
+}
 
-    const [fileUrl, setFileUrl] = useState('');
+const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
+  const [file, setFile] = useState<File[]>([]);
+  const [fileUrl, setFileUrl] = useState(mediaUrl);
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     // Do something with the files
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+    setFile(acceptedFiles);
+    fieldChange(acceptedFiles);
+    setFileUrl(convertFileToUrl(acceptedFiles[0]));
+  }, [file]);
+
+  const { getRootProps, getInputProps } = useDropzone({ 
+    onDrop,
+    accept:{
+        'image/*': ['.png', '.jpeg', '.jpg', '.svg']
+    }
+  });
 
   return (
     <div
@@ -18,7 +33,12 @@ const FileUploader = () => {
     >
       <input {...getInputProps()} className="cursor-pointer" />
       {fileUrl ? (
-        <div>test 1</div>
+        <>
+          <div className="flex flex-1 justify-center w-full p-5 lg:p-10">
+            <img src={fileUrl} className="file_uploader-img" alt="image" />
+          </div>
+          <p className="file_uploader-label">Click or Drag photo to replace</p>
+        </>
       ) : (
         <div className="file_uploader-box">
           <img
@@ -27,11 +47,11 @@ const FileUploader = () => {
             height={77}
             alt="file-upload"
           />
-          <h3 className='base-medium text-light-2 mb-2 mt-6'>Drag photo here</h3>
-          <p className='text-light-4 small-regular mb-6'>SVG, PNG, JPG</p>
-          <Button className='shad-button_dark_4'>
-            Select from device
-          </Button>
+          <h3 className="base-medium text-light-2 mb-2 mt-6">
+            Drag photo here
+          </h3>
+          <p className="text-light-4 small-regular mb-6">SVG, PNG, JPG</p>
+          <Button className="shad-button_dark_4">Select from device</Button>
         </div>
       )}
     </div>
