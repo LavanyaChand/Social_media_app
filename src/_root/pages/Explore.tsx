@@ -34,8 +34,9 @@ const Explore = () => {
 
 
   const shouldShowSearchResults = searchValue !== "";
-  const shouldShowPosts = !shouldShowSearchResults && 
-    posts.pages.every((item) => item.documents.length === 0);
+  const shouldShowPosts =
+  !shouldShowSearchResults &&
+  posts.pages.every((item) => item?.documents?.length === 0);
 
   return (
     <div className="explore-container">
@@ -69,26 +70,30 @@ const Explore = () => {
           />
         </div>
       </div>
-      <div className='flex flex-wrap gap-9 w-full max-w-5xl'>
-        {
-          shouldShowSearchResults ? (
-            <SearchResults 
-              isSearchFetching = {isSearchFetching}
-              searchedPosts = {searchedPosts}
-            />
+      <div className="flex flex-wrap gap-9 w-full max-w-5xl">
+        {shouldShowSearchResults ? (
+          // <SearchResults
+          //   isSearchFetching={isSearchFetching}
+          //   searchedPosts={searchedPosts}
+          // />
+          <SearchResults
+            isSearchFetching={isSearchFetching}
+            searchedPosts={searchedPosts ?? { documents: [], total: 0 }} // fallback if undefined
+          />
+        ) : shouldShowPosts ? (
+          <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
+        ) : (
+          posts.pages.map((item, index) =>
+            item?.documents ? (
+              <GridPostList key={`page-${index}`} posts={item.documents} />
+            ) : null
           )
-          : shouldShowPosts ? (
-            <p className='text-light-4 mt-10 text-center w-full'>End of posts</p>
-          ) : (
-          posts.pages.map((item, index) => (
-            <GridPostList key={`page-${index}`} posts={item.documents} />
-          ))
         )}
       </div>
 
       {hasNextPage && !searchValue && (
         //ref here means we are at the bottom of the page and start loading new posts
-        <div ref={ref} className='mt-10'> 
+        <div ref={ref} className="mt-10">
           <Loader />
         </div>
       )}
