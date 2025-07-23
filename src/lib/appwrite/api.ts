@@ -387,31 +387,52 @@ export async function deletePost(postId: string, imageId: string){
 
 }
 
-export async function getInfinitePosts({ pageParam }: { pageParam: number}){
+// export async function getInfinitePosts({ pageParam }: { pageParam: number}){
 
-  // const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(15)]
+//   // const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(15)]
 
+//   const queries: string[] = [Query.orderDesc('$updatedAt'), Query.limit(15)];
+
+//   if(pageParam){
+//     queries.push(Query.cursorAfter(pageParam.toString()));
+//   }
+
+//   try {
+//     const posts = await databases.listDocuments(
+//       appwriteConfig.databaseId,
+//       appwriteConfig.postCollectionId,
+//       queries, // pass all queries based off of which we want to fetch the data
+//     )
+
+//     if(!posts) throw Error;
+
+//     return posts;
+    
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+export async function getInfinitePosts({ pageParam }: { pageParam?: string }) {
   const queries: string[] = [Query.orderDesc('$updatedAt'), Query.limit(15)];
 
-  if(pageParam){
-    queries.push(Query.cursorAfter(pageParam.toString()));
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam));
   }
 
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
-      queries, // pass all queries based off of which we want to fetch the data
-    )
-
-    if(!posts) throw Error;
-
+      queries
+    );
+    if (!posts) throw Error;
     return posts;
-    
   } catch (error) {
     console.log(error);
   }
 }
+
 
 export async function searchPosts(searchTerm: string){
 
